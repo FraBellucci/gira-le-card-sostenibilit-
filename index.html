@@ -161,6 +161,40 @@
         .hidden {
             display: none;
         }
+        .button-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: #10b981;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #059669;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+}
     </style>
 </head>
 <body>
@@ -225,27 +259,31 @@
         }
 
         function updateInfoPanel() {
-            const panel = document.getElementById('infoPanel');
-            const content = document.getElementById('infoContent');
-            const continueBtn = document.getElementById('continueBtn');
+    const panel = document.getElementById('infoPanel');
+    const content = document.getElementById('infoContent');
 
-            if (matched.length > 0) {
-                panel.classList.remove('hidden');
-                content.innerHTML = matched.map(type => {
-                    const info = pillarInfo[type];
-                    return `
-                        <div class="info-item">
-                            <div class="info-emoji">${info.emoji}</div>
-                            <div class="info-text">${info.text}</div>
-                        </div>
-                    `;
-                }).join('');
+    if (matched.length > 0) {
+        panel.classList.remove('hidden');
+        content.innerHTML = matched.map(type => {
+            const info = pillarInfo[type];
+            return `
+                <div class="info-item">
+                    <div class="info-emoji">${info.emoji}</div>
+                    <div class="info-text">${info.text}</div>
+                </div>
+            `;
+        }).join('');
 
-                if (matched.length === 3) {
-                    continueBtn.classList.remove('hidden');
-                }
-            }
+        if (matched.length === 3) {
+            content.innerHTML += `
+                <div class="button-container">
+                    <button class="btn btn-primary" onclick="resetGame()">🔄 Rigioca</button>
+                    <button class="btn btn-secondary" onclick="window.close()">✓ Torna al corso</button>
+                </div>
+            `;
         }
+    }
+}
 
         function handleCardClick(index) {
             if (flipped.length === 2 || flipped.includes(index) || matched.includes(shuffledCards[index].type)) {
@@ -274,7 +312,13 @@
                 }
             }
         }
-
+            function resetGame() {
+    flipped = [];
+    matched = [];
+    document.getElementById('infoPanel').classList.add('hidden');
+    initGame();
+    updateMessage();
+}
         function initGame() {
             shuffledCards = shuffle(cards);
             const grid = document.getElementById('cardsGrid');
